@@ -1,0 +1,22 @@
+{
+  "name": "houmio-site-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "site.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/houmio/houmio-site-template.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/houmio/houmio-site-template/issues"
+  },
+  "homepage": "https://github.com/houmio/houmio-site-template",
+  "dependencies": {
+    "ws": "^0.6.3"
+  }
+}

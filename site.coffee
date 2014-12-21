@@ -52,7 +52,7 @@ volumeDown = -> sonos("volume/-10")
 
 sonos = (action) ->
   console.log action
-  request.post("http://localhost:5005/#{action}")
+  request.get("http://localhost:5005/#{action}")
 
 socket = new WebSocket "wss://houm.herokuapp.com"
 socket.on 'open', onSocketOpen

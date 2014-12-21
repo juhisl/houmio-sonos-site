@@ -1,0 +1,10 @@
+[program:node-sonos-http-api]
+directory=/home/pi/%(program_name)s
+command=node server.js
+autostart=true
+autorestart=true
+stdout_logfile=/home/pi/%(program_name)s/log
+stdout_logfile_maxbytes=10MB
+logfile_backups=0
+redirect_stderr=true
+user=pi

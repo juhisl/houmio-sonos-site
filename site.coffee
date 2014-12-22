@@ -1,5 +1,6 @@
 WebSocket = require('ws')
 request = require('request')
+rsj = require('rsj')
 
 exit = (msg) ->
   console.log msg
@@ -32,6 +33,8 @@ onDevAddr = (action, data) ->
       volumeUp()
     when '5'
       volumeDown()
+    when '6'
+      news()
     
 playOrPause = (startPlaying, playlist) ->
   if (startPlaying) 
@@ -49,6 +52,24 @@ setVolume = (volume) ->
 next = -> sonos("next")
 volumeUp = -> sonos("volume/+10")
 volumeDown = -> sonos("volume/-10")
+news = -> newsUrl(playNews)
+
+playNews = (url) ->
+  encodedUri = encodeURIComponent(url)
+  preset = JSON.stringify(
+    {
+      players: [ { roomName: "Living Room", volume: 25 } ],
+      state: "play",
+      uri: encodedUri,
+      playMode: "NORMAL"
+    })
+  sonos("preset/" + preset)
+
+newsUrl = (playInSonos) ->
+  rsj.r2j('http://areena.yle.fi/api/search.rss?id=1492393&media=audio&ladattavat=1', (json) ->
+    latest = JSON.parse(json)[0]
+    url = latest.enclosures[0].url
+    playInSonos(url))
 
 sonos = (action) ->
   console.log action

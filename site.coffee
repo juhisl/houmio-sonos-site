@@ -19,59 +19,52 @@ onSocketMessage = (s) ->
   try
     message = JSON.parse s
     console.log "Received message: %j", message
-    onDevAddr(message["data"]["devaddr"], message["data"])
+    args = message["data"]["devaddr"].split(" ")
+    action = args[0]
+    args.shift()
+    onAction(action, args, message["data"])
 
-onDevAddr = (action, data) ->
+onAction = (action, args, data) ->
   switch action
-    when '1' 
-      playOrPause(data["on"], "Joulu 2014")
-    when '2' 
-      next()
-    when '3' 
+    when "play-or-pause"
+      playlist = args.join(" ")
+      playOrPause(data["on"], playlist)
+    when 'set-volume' 
       setVolume(data["bri"])
-    when '4' 
-      volumeUp()
-    when '5'
-      volumeDown()
-    when '6'
-      news()
+    when 'yle-uutiset'
+      volume = args[0]
+      args.shift()
+      roomName = args.join(" ")
+      newsUrl(playNews, volume, roomName)
     else
       sonos(action)
     
 playOrPause = (startPlaying, playlist) ->
   if (startPlaying) 
-    play(playlist)
+    sonos(playlist)
+    sonos("shuffle/on")
   else 
-    pause()
-play = (playlist) ->
-  sonos("favorite/#{playlist}")
-  sonos("shuffle/on")
-  sonos("play")
-pause = -> sonos("pause")
+    sonos("pause")
 setVolume = (volume) ->
   newVolume = Math.round(100/255 * volume)
   sonos("volume/#{newVolume}")
-next = -> sonos("next")
-volumeUp = -> sonos("volume/+10")
-volumeDown = -> sonos("volume/-10")
-news = -> newsUrl(playNews)
 
-playNews = (url) ->
+playNews = (url, volume, roomName) ->
   encodedUri = encodeURIComponent(url)
   preset = JSON.stringify(
     {
-      players: [ { roomName: "Living Room", volume: 25 } ],
+      players: [ { roomName: roomName, volume: volume } ],
       state: "play",
       uri: encodedUri,
       playMode: "NORMAL"
     })
   sonos("preset/" + preset)
 
-newsUrl = (playInSonos) ->
+newsUrl = (play, volume, roomName) ->
   rsj.r2j('http://areena.yle.fi/api/search.rss?id=1492393&media=audio&ladattavat=1', (json) ->
     latest = JSON.parse(json)[0]
     url = latest.enclosures[0].url
-    playInSonos(url))
+    play(url, volume, roomName))
 
 sonos = (action) ->
   console.log action

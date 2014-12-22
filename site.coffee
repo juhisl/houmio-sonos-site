@@ -35,6 +35,8 @@ onDevAddr = (action, data) ->
       volumeDown()
     when '6'
       news()
+    else
+      sonos(action)
     
 playOrPause = (startPlaying, playlist) ->
   if (startPlaying) 

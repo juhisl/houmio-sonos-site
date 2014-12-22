@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/houmio/houmio-site-template",
   "dependencies": {
+    "request": "^2.51.0",
     "ws": "^0.6.3"
   }
 }
